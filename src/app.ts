@@ -1,24 +1,38 @@
-const button = document.querySelector("button")!;
+const userName = "Henry";
+let age = 30;
 
+age = 29;
 
-function add(n1: number, n2: number) {
-  if (n1 + n2 > 0) {
-    return n1 + n2;
-  }
-  return;
-}
+// function add(a: number, b: number) {
+//   let result = a + b;
+//   return result;
+// }
 
-let appId = 'abc';
+// if (age > 30) {
+//     let isOld = true;
+// }
 
+// console.log(isOld);
 
+const add = (a: number, b: number = 1) => a + b;
 
-function clickHandler(message: string) {
+// console.log(add(2, 5));
 
-  console.log("Clicked!" + message);
-}
+const printOutput: (a: number | string) => void = (output) =>
+  console.log(output);
+
+const button = document.querySelector("button");
+
 if (button) {
-  button.addEventListener("click", clickHandler.bind(null, 'Youre welcome'));
+  button.addEventListener("click", event => console.log(event));
 }
-  
 
-/// add comments
+printOutput(add(3));
+
+const hobbies = ['Sports', 'Cooking'];
+console.log(hobbies);
+const activeHobbies = ['Hiking'];
+// spread & push arrays
+activeHobbies.push(...hobbies);
+
+console.log(activeHobbies);
