@@ -33,6 +33,19 @@ const hobbies = ['Sports', 'Cooking'];
 console.log(hobbies);
 const activeHobbies = ['Hiking'];
 // spread & push arrays
-activeHobbies.push(...hobbies);
+activeHobbies.push("Eating",...hobbies);
 
 console.log(activeHobbies);
+
+const person = {
+    name: 'Henry',
+    age: 30
+};
+const copiedObj = person;
+console.log(copiedObj);
+
+
+
+const copiedPerson = { ...person };
+console.log(copiedPerson);
+
