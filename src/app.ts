@@ -5,10 +5,20 @@ class Department {
     constructor(n: string) {
         this.name = n;
     }
+
+    // method
+    describe() {
+        console.log('Department: ' + this.name);
+        
+    }
 }
 
 const accounting = new Department('Accounting');
 const law = new Department('law');
-console.log(accounting);
-console.log(law);
+law.describe();
+accounting.describe();
+
+const accountingCopy = { describe: accounting.describe};
+
+accountingCopy.describe();
 
