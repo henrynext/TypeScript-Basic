@@ -1,22 +1,26 @@
 // class
-class Department {
-//   private readonly id: string;
-//   // public default
-//   private name: string;
+abstract class Department {
+   static fiscalYear = 2020;
+  //   private readonly id: string;
+  //   // public default
+  //   private name: string;
   // private only access in class
-  private employees: string[] = [];
-
+  protected employees: string[] = [];
 
   // readonly is clear value that cannot change value
-  constructor(private readonly id: string, public name: string) {
+  constructor(protected readonly id: string, public name: string) {
     // this.id = id;
     // this.name = n;
+    // console.log(Department.fiscalYear);
+    
+  }
+
+  static createEmployee(name: string) {
+    return {name: name};
   }
 
   // method
-  describe(this: Department) {
-    console.log(`Department (${this.id}): ${this.name}`);
-  }
+  abstract describe(this: Department): void
 
   addEmployee(employee: string) {
     // validation
@@ -31,55 +35,102 @@ class Department {
 }
 
 class ITDepartment extends Department {
-    admins: string[]
-    constructor(id: string, admins: string[]) {
-        super(id, 'IT');
-        this.admins = admins;
-    }
+  admins: string[];
+  constructor(id: string, admins: string[]) {
+    super(id, "IT");
+    this.admins = admins;
+  }
+
+  describe(): void {
+      console.log('It Department - ID: ' + this.id);
+      
+  }
 }
 
 class AccountingDepartment extends Department {
-    constructor(id: string, private reports: string[]) {
-        super(id, 'Account');
+  private lastReport: string;
+
+  get mostRecentReport() {
+    if (this.lastReport) {
+        return this.lastReport;
+    }
+    throw new Error('no report found.');
+  }
+
+  set mostRecentReport(value: string) {
+    if(!value) {
+        throw new Error('Please pass in a valid value!')
+    }
+    this.addReport(value);
+  }
+
+  constructor(id: string, private reports: string[]) {
+    super(id, "Account");
+    this.lastReport = reports[0];
+  }
+
+  describe() {
+    console.log('Accounting Department - ID: ' + this.id);
     
+  }
+  addEmployee(name: string) {
+    if (name === "Max") {
+      return;
     }
+    this.employees.push(name);
+  }
 
-    addReport(text: string) {
-        this.reports.push(text);
-    }
+  addReport(text: string) {
+    this.reports.push(text);
+    this.lastReport = text;
+  }
 
-    getReport() {
-        console.log(this.reports);
-        
-    }
+  getReport() {
+    console.log(this.reports);
+  }
 }
 
 
+const employee1 = Department.createEmployee('Angel');
+console.log(employee1, Department.fiscalYear);
 
-const accounting = new ITDepartment("d1", ['Henry']);
 
-accounting.addEmployee("Max");
-accounting.addEmployee("Max2");
-accounting.addEmployee("Max3");
-accounting.addEmployee("Max4");
+
+const it = new ITDepartment("d1", ["Henry"]);
+
+
+
+it.addEmployee("Max");
+it.addEmployee("Max2");
+it.addEmployee("Max3");
+it.addEmployee("Max4");
 
 // accounting.employees[2] = 'Henry';
 
-accounting.printEmployeeInformation();
+it.printEmployeeInformation();
 
 // const law = new Department("law");
 // law.describe();
-accounting.describe();
+it.describe();
 
-console.log(accounting);
+console.log(it);
 
-const newAccount = new AccountingDepartment('D2', []);
+const newAccount = new AccountingDepartment("D2", []);
 
-newAccount.addReport('Something went wrong...');
+newAccount.mostRecentReport = 'Year of report';
+newAccount.mostRecentReport = 'Year of report2';
 
-newAccount.getReport();
 
+newAccount.addReport("Something went wrong...");
+console.log(newAccount.mostRecentReport);
 
+newAccount.addEmployee("Max");
+newAccount.addEmployee("King");
+// newAccount.printEmployeeInformation();
+
+// newAccount.getReport();
+
+newAccount.describe();
 
 // accounting.name = "new name";
 // console.log(accounting.name);
@@ -87,3 +138,25 @@ newAccount.getReport();
 // const accountingCopy = { name: "s", describe: accounting.describe };
 
 // accountingCopy.describe();
+
+
+
+// class manageDepartment extends Department {
+//     constructor(id: string, private hire: string[]) {
+//       super(id, "Management");
+//     }
+  
+//     doHiring(employee: string) {
+//       this.hire.push(employee);
+//     }
+  
+//     getHiringList() {
+//       console.log(this.hire);
+//     }
+//   }
+  
+//   const management = new manageDepartment("d3", []);
+//   management.doHiring("Henry2");
+//   management.doHiring("Henry3");
+//   management.doHiring("Henry4");
+//   management.getHiringList();
