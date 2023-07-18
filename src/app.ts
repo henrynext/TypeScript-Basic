@@ -1,27 +1,118 @@
-interface Greetable {
-    name: string;
-    
-    greet(phrase: string): void;
+type Admin = {
+  name: string;
+  privileges: string[];
+};
+
+type Employee = {
+  name: string;
+  startDate: Date;
+};
+
+// interface ElevatedEmployees extends Employee, Admin {
+
+// }
+
+type ElevatedEmployees = Admin & Employee;
+
+const e1: ElevatedEmployees = {
+  name: "Max",
+  privileges: ["Create-sercer"],
+  startDate: new Date(),
+};
+
+type Combinable = string | number;
+
+type Numeric = number | boolean;
+
+type Universal = Combinable & Numeric;
+
+console.log(e1);
+
+function add(a: Combinable, b: Combinable) {
+  if (typeof a === "string" || typeof b === "string") {
+    return a.toString() + b.toString();
+  }
+  return a + b;
 }
 
-class Person implements Greetable {
-    name: string;
-    age = 30;
+type UnknownEmployee = Employee | Admin;
 
+function printEmployeeInformation(emp: UnknownEmployee) {
+  console.log("Name: " + emp.name);
+  if ("privileges" in emp) {
+    console.log("Privileges: " + emp.privileges);
+  }
 
-    constructor(n: string) {
-        this.name = n;
-    }
-    greet(phrase: string): void {
-        console.log(phrase + ' ' + this.name);
-        
-    }
+  if ("startDate" in emp) {
+    console.log("startDate: " + emp.startDate);
+  }
 }
 
-let user1: Greetable;
+printEmployeeInformation({
+  name: "henry",
+  privileges: ["nice city"],
+  startDate: new Date(),
+});
 
-user1 = new Person('Max');
+class Car {
+  drive() {
+    console.log("Driving...");
+  }
+}
 
-user1.greet('Hi there - I am');
+class Truck {
+  drive() {
+    console.log("Driving a truck..");
+  }
 
-console.log(user1);
+  loadCargo(amount: number) {
+    console.log(`Loading cargo... ${amount}`);
+  }
+}
+
+type Vehicle = Car | Truck;
+
+const v1 = new Car();
+const v2 = new Truck();
+
+function useVehicle(vehicle: Vehicle) {
+  vehicle.drive();
+  if (vehicle instanceof Truck) {
+    vehicle.loadCargo(1000);
+  }
+}
+
+useVehicle(v1);
+useVehicle(v2);
+
+interface Bird {
+  type: "bird";
+  flyingSpeed: number;
+}
+
+interface Horse {
+  type: "horse";
+  runningSpeed: number;
+}
+
+type Animal = Bird | Horse;
+
+function moveAnimal(animal: Animal) {
+  let speed;
+  switch (animal.type) {
+    case "bird":
+      speed = animal.flyingSpeed;
+      break;
+    case 'horse':
+        speed = animal.runningSpeed;
+        break;
+  }
+  console.log(`Moving with speed: ${speed}`);
+}
+
+moveAnimal({type: 'bird', flyingSpeed: 10});
+
+// const userInputElement = <HTMLInputElement>document.getElementById('user-input')!;
+const userInputElement = document.getElementById('user-input')! as HTMLInputElement;
+
+userInputElement.value = 'Hello';
