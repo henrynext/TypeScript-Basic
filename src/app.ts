@@ -129,16 +129,49 @@ button.addEventListener("click", p.showMessage);
 
 // decorator
 
-function Required() {
-
+interface ValidatorConfig {
+  [property: string]: {
+    [validatableProp: string]: string[]; // ['required', 'positive']
+  };
 }
 
-function PositiveNumber() {
+const registerdValidators: ValidatorConfig = {};
 
+function Required(target: any, propName: string) {
+  registerdValidators[target.constructor.name] = {
+    ...registerdValidators[target.constructor.name],
+    [propName]: ["required"],
+  };
 }
 
-function validate(obj: object) {
+function PositiveNumber(target: any, propName: string) {
+  registerdValidators[target.constructor.name] = {
+    ...registerdValidators[target.constructor.name],
+    [propName]: ["positive"],
+  };
+}
 
+function validate(obj: any) {
+  const objValidatorConfig = registerdValidators[obj.constructor.name];
+  if (!objValidatorConfig) {
+    return true;
+  }
+  let isValid = true;
+  for (const prop in objValidatorConfig) {
+    
+    for (const validator of objValidatorConfig[prop]) {
+      switch (validator) {
+        case 'required':
+          isValid = isValid && !!obj[prop];
+          break;
+        case 'positive':
+          isValid = isValid && obj[prop] > 0;
+          break;
+
+      }
+    }
+  }
+  return isValid;
 }
 
 class Course {
@@ -153,24 +186,20 @@ class Course {
   }
 }
 
-const courseForm = document.querySelector('form')!;
-courseForm.addEventListener('submit', event => {
+const courseForm = document.querySelector("form")!;
+courseForm.addEventListener("submit", (event) => {
   event.preventDefault();
-  const titleEl = document.getElementById('title') as HTMLInputElement;
-  const pirceEl = document.getElementById('price') as HTMLInputElement;
-  
+  const titleEl = document.getElementById("title") as HTMLInputElement;
+  const pirceEl = document.getElementById("price") as HTMLInputElement;
+
   const title = titleEl.value;
   const price = +pirceEl.value;
 
-  
-
   const createdCourse = new Course(title, price);
-  
+
   if (!validate(createdCourse)) {
-    throw new Error('Invalid input, please try again')
+    throw new Error("Invalid input, please try again");
     return;
   }
   console.log(createdCourse);
-  
-
-})
+});
