@@ -1,22 +1,48 @@
-import "reflect-metadata";
-import "es6-shim";
+import axios from "axios";
 
-import { Product } from "./product.model";
+const form = document.querySelector("form")!;
+const addressInput = document.getElementById("address")! as HTMLInputElement;
 
-// const products = [
-//   { title: "A carpet", price: 31.99 },
-//   { title: "A car", price: 50000.99 },
-//   { title: "notebook", price: 233.99 },
-// ];
+const GOOGLE_API_KEY = "";
 
-const newProd = new Product("", -5.55523);
-validate(newProd).then((errors) => {
-  if (errors.length > 0) {
-    console.log("VALIDATION ERRORS!");
-    console.log(errors);
-  } else {
-    console.log(newProd.getInformation());
-  }
-});
+declare var google: any;
 
-// const p1 = new Product("A book", 20.99);
+type GoogleGeocodingResponse = {
+  results: { geometry: { location: { lat: number; lng: number } } }[];
+  status: "OK" | "ZERO_RESULTS";
+};
+
+function searchAddressHandler(event: Event) {
+  event.preventDefault();
+  const enteredAddress = addressInput.value;
+
+  axios
+    .get<GoogleGeocodingResponse>(
+      `https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURI(
+        enteredAddress
+      )}&key=${GOOGLE_API_KEY}`
+    )
+    .then(response => {
+      if (response.data.status !== "OK") {
+        throw new Error("Could not fetch location!");
+      }
+      const coordinates = response.data.results[0].geometry.location;
+      const  map = new Map(
+        document.getElementById('map') as HTMLElement,
+        {
+          zoom: 8,
+          center: coordinates
+        }
+        const marker = new AdvancedMarkerElement({
+          map: map,
+          position: coordinates
+        });
+      );
+    })
+    .catch(err => {
+      alert(err.message);
+      console.log(err);
+    });
+}
+
+form.addEventListener("submit", searchAddressHandler);
